@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class UserInfoMod(loader.Module):
+    """UserInfo in web interface"""
     strings = {
         "name": "UserInfo",
         "processing": "⏳ Обработка...",
