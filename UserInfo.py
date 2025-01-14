@@ -52,12 +52,16 @@ class UserInfoMod(loader.Module):
         args = utils.get_args_raw(message)
         full_user = None
 
-        if reply:
-            full_user = await message.client(GetFullUserRequest(reply.sender_id))
-        elif args:
-            entity = await message.client.get_entity(args)
-            full_user = await message.client(GetFullUserRequest(entity.id))
-        else:
+        try:
+            if reply:
+                full_user = await message.client(GetFullUserRequest(reply.sender_id))
+            elif args:
+                entity = await message.client.get_entity(args)
+                full_user = await message.client(GetFullUserRequest(entity.id))
+            else:
+                await utils.answer(message, self.strings["no_user"])
+                return
+        except Exception:
             await utils.answer(message, self.strings["no_user"])
             return
 
