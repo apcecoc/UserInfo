@@ -1,4 +1,4 @@
-__version__ = (1, 0, 0)
+__version__ = (1, 0, 1)
 
 #       █████  ██████   ██████ ███████  ██████  ██████   ██████ 
 #       ██   ██ ██   ██ ██      ██      ██      ██    ██ ██      
@@ -23,6 +23,7 @@ from requests import get, post
 import os
 import tempfile
 from telethon.tl.functions.users import GetFullUserRequest
+from urllib.parse import quote
 
 logger = logging.getLogger(__name__)
 
@@ -70,14 +71,15 @@ class UserInfoMod(loader.Module):
 
         photo = user.photo
         photo_url = await self.upload_user_photo(user, message) if photo else "https://via.placeholder.com/300x200"
+        photo_url = quote(photo_url, safe=":/")
 
         user_data = {
             "id": user.id,
-            "username": user.username or "",
-            "first_name": user.first_name or "",
-            "last_name": user.last_name or "",
-            "bio": bio,
-            "photo": photo_url,
+            "username": quote(user.username or ""),
+            "first_name": quote(user.first_name or ""),
+            "last_name": quote(user.last_name or ""),
+            "bio": quote(bio),
+            "photo": quote(photo_url),
         }
 
         page_url = (
@@ -86,7 +88,7 @@ class UserInfoMod(loader.Module):
             f"&username={user_data['username']}"
             f"&first_name={user_data['first_name']}"
             f"&last_name={user_data['last_name']}"
-            f"&bio={utils.escape_html(user_data['bio'])}"
+            f"&bio={user_data['bio']}"
             f"&photo={user_data['photo']}"
         )
 
